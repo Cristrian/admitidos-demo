@@ -29,7 +29,7 @@ def generate_dropdown(id: str, title: str, dropdown_data: dict,
         placeholder=default_label,
         value=default_value
     )
-    return dropdown
+    return [title, dropdown]
 
 def generate_card(id, color, card_title, card_text):
     
