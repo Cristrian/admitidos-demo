@@ -27,8 +27,7 @@ layout = html.Div([
 ])
 app.layout = layout
 
-test = callbacks.generate_graphics_callbacks(app, 'live', df)
+callbacks.generate_graphics_callbacks(app, 'live', df)
 
-if __name__ == '__main__':
-    
+if __name__ == '__main__': 
     app.run_server()

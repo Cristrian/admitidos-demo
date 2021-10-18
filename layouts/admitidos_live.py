@@ -1,9 +1,9 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 from layouts import components
+from data import data
 test_dropdown = {'Valor 1': 1, 'Valor 2': 2}
 def generate_layout(appname):
-
     dropdowns = [
         dbc.Row([
             dbc.Col(
