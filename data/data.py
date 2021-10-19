@@ -12,7 +12,7 @@ def generate_dropdowns_data():
 
     s_periodos = df['cod_periodo'].drop_duplicates().sort_values()
     s_periodos.index = [
-        str(periodo)[:-1]+'-I' if str(periodo)[-1]=='-1'
+        str(periodo)[:-1]+'-I' if str(periodo)[-1]=='1'
         else
         str(periodo)[:-1]+'-II'
         for periodo in s_periodos

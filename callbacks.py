@@ -5,11 +5,21 @@ import pandas as pd
 import plotly.express as px
 
 from data import data
+def gen_query(col, value):
+    """Generates a query to filter a Dataframe"""
+    if (value is None) or (value == []):
+        query = f'{col} != None'
+    else:
+        for i, val in enumerate(value):
+            if i == 0:
+                query = f'({col} == {val!r})'
+            else:
+                query = query + f' or ({col} == {val!r})'
+    query = f'({query})'
+    return query
 
 def generate_graphics_callbacks(app: Dash, appname: str, df: pd.DataFrame):
-    df = data.get_dataframe()
     @app.callback(
-        Output('test-out12', 'children'),
         Output(f'{appname}-admitidos-bar', 'figure'),
         Output(f'{appname}-modalidad-pie', 'figure'),
         Output(f'{appname}-metodologia-pie', 'figure'),
@@ -21,45 +31,35 @@ def generate_graphics_callbacks(app: Dash, appname: str, df: pd.DataFrame):
         Input(f'{appname}-programa-dropdown', 'value')],
     )
     def generate_graphs(*values):
-
         #First, we're going to filter the dataframe
-        filters = {
-            'cod_periodo': values[0],
-            'direccion_territorial': values[1],
-            'cetap': values[2],
-            'modalidad': values[3],
-            'metodologia': values[4],
-            'programa': values[5]
-        }
+        #if values[0] is None:
+        print(values)
+        filters_querys = [
+            gen_query('cod_periodo', values[0]),
+            gen_query('direccion_territorial', values[1]),
+            gen_query('cetap', values[2]),
+            gen_query('modalidad' ,values[3]),
+            gen_query('metodologia' ,values[4]),
+            gen_query('programa' ,values[5])
+        ]
 
-
-        
-        for col in filters:
-            if filters[col] is None:
-                filtered_df.query(f'{col} != -1', inplace=True)
-            else:
-                filtered_df = filtered_df[filtered_df[col].isin(filters[col])]
 
         #Now We're going do define the graphics data
+        query = (
+            f'{filters_querys[0]} and '
+            f'{filters_querys[1]} and '
+            f'{filters_querys[2]} and '
+            f'{filters_querys[3]} and ' 
+            f'{filters_querys[4]} and ' 
+            f'{filters_querys[5]}' 
+        )
+
+        filtered_df = df.query(query)
         #Bar Data      
         programas = filtered_df['programa'].drop_duplicates()
         programas.index = [
             filtered_df.query(f'programa == {programa!r}').shape[0]
             for programa in programas
-        ]
-
-        #Pie1 Data
-        modalidades = filtered_df['modalidad'].drop_duplicates()
-        modalidades.index = [
-            filtered_df.query(f'modalidad == {modalidad!r}').shape[0]
-            for modalidad in modalidades
-        ]
-
-        #Pie2 Data
-        metodologias = filtered_df['metodologia'].drop_duplicates()
-        metodologias.index = [
-            filtered_df.query(f'metodologia == {metodologia!r}').shape[0]
-            for metodologia in metodologias
         ]
 
         #Admitidos programa figure
@@ -71,6 +71,9 @@ def generate_graphics_callbacks(app: Dash, appname: str, df: pd.DataFrame):
         #Pie metodologia
         pie_met = px.pie(filtered_df, names='metodologia')
 
-        return values, bar_prog, pie_mod, pie_met
+        return bar_prog, pie_mod, pie_met
 
     return 'callbacks created'
+
+def gen_download_callback(app: Dash, appname: str):
+    return None
