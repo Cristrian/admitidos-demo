@@ -4,27 +4,29 @@ from layouts import components
 from data import data
 test_dropdown = {'Valor 1': 1, 'Valor 2': 2}
 def generate_layout(appname):
+
+    dropdowns_data = data.get_dropdown_data()
     dropdowns = [
         dbc.Row([
             dbc.Col(
                 components.generate_dropdown(
                     id=f'{appname}-periodo-dropdown',
                     title='Periodo',
-                    dropdown_data=test_dropdown,
+                    dropdown_data=dropdowns_data['periodo-dropdown'],
                 )
             ),
             dbc.Col(
                 components.generate_dropdown(
                     id=f'{appname}-territorial-dropdown',
                     title='Dirección Territorial',
-                    dropdown_data=test_dropdown,
+                    dropdown_data=dropdowns_data['territorial-dropdown'],
                 )
             ),
             dbc.Col(
                 components.generate_dropdown(
                     id=f'{appname}-cetap-dropdown',
                     title='CETAP',
-                    dropdown_data=test_dropdown,
+                    dropdown_data=dropdowns_data['cetap-dropdown'],
                 )
             ),
         ]),
@@ -33,21 +35,21 @@ def generate_layout(appname):
                 components.generate_dropdown(
                     id=f'{appname}-modalidad-dropdown',
                     title='Modalidad',
-                    dropdown_data=test_dropdown,
+                    dropdown_data=dropdowns_data['modalidad-dropdown'],
                 )
             ),
             dbc.Col(
                 components.generate_dropdown(
                     id=f'{appname}-metodologia-dropdown',
                     title='Metodología',
-                    dropdown_data=test_dropdown,
+                    dropdown_data=dropdowns_data['metodologia-dropdown'],
                 )
             ),
             dbc.Col(
                 components.generate_dropdown(
                     id=f'{appname}-programa-dropdown',
                     title='Programa',
-                    dropdown_data=test_dropdown,
+                    dropdown_data=dropdowns_data['programa-dropdown'],
                 )
             ),
         ]),

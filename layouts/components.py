@@ -27,7 +27,8 @@ def generate_dropdown(id: str, title: str, dropdown_data: dict,
         id=id,
         options=dropdown_options,
         placeholder=default_label,
-        value=default_value
+        value=default_value,
+        multi=True
     )
     return [title, dropdown]
 

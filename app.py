@@ -1,10 +1,9 @@
 from dash import Dash, dcc, html
-from dash.html.H1 import H1
-from pandas.io.sql import has_table
 
 import callbacks
 from data import data
 from layouts import admitidos_live, admitidos_foto
+
 app = Dash(__name__)
 
 #Import Data
@@ -23,7 +22,7 @@ layout = html.Div([
         ], 
         value='tab-en-vivo'),
     html.Div(id='page-content', children=live_layout),
-    html.Div(id='test-out')
+    html.Div(id='test-out12')
 ])
 app.layout = layout
 
