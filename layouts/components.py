@@ -45,3 +45,9 @@ def generate_card(id, color, card_title, card_text):
 
     return card
     
+def gen_download_button(id_button, id_download):
+    download_button = [
+        dbc.Button('Tomar Fotografía', id=id_button, color='primary'),
+        dcc.Download(id=id_download)
+    ]
+    return download_button

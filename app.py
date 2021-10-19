@@ -3,13 +3,16 @@ from dash import Dash, dcc, html
 import callbacks
 from data import data
 from layouts import admitidos_live, admitidos_foto
+from layouts.components import gen_download_button
 
 app = Dash(__name__)
 
 #Import Data
 df = data.get_dataframe()
 
-live_layout = admitidos_live.generate_layout('live')
+live_layout = [html.Div(admitidos_live.generate_layout('live')),
+               html.Div(gen_download_button('live-btn_down', 'live-download-dataframe')),]
+
 foto_layout = admitidos_foto.generate_layout('foto')
 
 
@@ -22,11 +25,16 @@ layout = html.Div([
         ], 
         value='tab-en-vivo'),
     html.Div(id='page-content', children=live_layout),
-    html.Div(id='test-out12')
+    
 ])
+
+
+
 app.layout = layout
 
 callbacks.generate_graphics_callbacks(app, 'live', df)
+callbacks.gen_download_callback(app, 'live', df)
+callbacks.generate_graphics_callbacks(app, 'foto', df)
 
 if __name__ == '__main__': 
     app.run_server()

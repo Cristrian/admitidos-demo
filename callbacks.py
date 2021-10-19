@@ -1,5 +1,5 @@
 import json
-from dash import Dash
+from dash import Dash, dcc
 from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.express as px
@@ -75,5 +75,12 @@ def generate_graphics_callbacks(app: Dash, appname: str, df: pd.DataFrame):
 
     return 'callbacks created'
 
-def gen_download_callback(app: Dash, appname: str):
+def gen_download_callback(app: Dash, appname: str, df: pd.DataFrame):
+    @app.callback(
+        Output(f'{appname}-download-dataframe', 'data'),
+        Input(f'{appname}-btn_down', 'n_clicks'),
+        prevent_initial_call=True
+    )
+    def download_data(n):
+        return dcc.send_data_frame(df.to_csv, 'picture.csv')
     return None
