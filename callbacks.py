@@ -63,7 +63,7 @@ def generate_graphics_callbacks(app: Dash, appname: str, df: pd.DataFrame):
         ]
 
         #Admitidos programa figure
-        bar_prog = px.bar(x=[1,2,3], y=[4,5,6])
+        bar_prog = px.bar(x=programas.index, y=programas.values)
 
         #Pie modalidad
         pie_mod = px.pie(filtered_df, names='modalidad')
