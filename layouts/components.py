@@ -51,3 +51,27 @@ def gen_download_button(id_button, id_download):
         dcc.Download(id=id_download)
     ]
     return download_button
+
+def gen_upload_box(input_id, output_id):
+    upload_box = html.Div([
+        dcc.Upload(
+            id=input_id,
+            children=html.Div([
+                'Drag and Drop or ',
+                html.A('Select Files')
+            ]),
+            style={
+                'width': '100%',
+                'height': '60px',
+                'lineHeight': '60px',
+                'borderWidth': '1px',
+                'borderStyle': 'dashed',
+                'borderRadius': '5px',
+                'textAlign': 'center',
+                'margin': '10px'
+            },
+            multiple=True
+        ),
+        html.Div(id=output_id),
+    ])
+    return upload_box
