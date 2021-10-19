@@ -57,11 +57,11 @@ def generate_layout(appname):
 
     graphics = [
         dbc.Row(
-            dcc.Graph(id=f'{appname}-admitidos-bar')
+            dbc.Col(dcc.Graph(id=f'{appname}-admitidos-bar'))
         ),
         dbc.Row([
-            dbc.Col(dcc.Graph(id=f'{appname}-modalidad-pie')),
-            dbc.Col(dcc.Graph(id=f'{appname}-metodologia-pie')),
+            dbc.Col(dcc.Graph(id=f'{appname}-modalidad-pie'), width='md-6'),
+            dbc.Col(dcc.Graph(id=f'{appname}-metodologia-pie'), width='md-6'),
         ])
     ]
 
