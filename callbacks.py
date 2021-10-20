@@ -52,6 +52,10 @@ def generate_graphics_callbacks(app: Dash, appname: str, df: pd.DataFrame):
         Output(f'{appname}-admitidos-bar', 'figure'),
         Output(f'{appname}-modalidad-pie', 'figure'),
         Output(f'{appname}-metodologia-pie', 'figure'),
+        Output(f'{appname}-territorial-bar', 'figure'),
+        Output(f'{appname}-cetap-bar', 'figure'),
+        Output(f'{appname}-historico-bar', 'figure'),
+        Output(f'{appname}-total-card', 'childen'),
         [Input(f'{appname}-periodo-dropdown', 'value'),
         Input(f'{appname}-territorial-dropdown', 'value'),
         Input(f'{appname}-cetap-dropdown', 'value'),
@@ -100,7 +104,29 @@ def generate_graphics_callbacks(app: Dash, appname: str, df: pd.DataFrame):
         #Pie metodologia
         pie_met = px.pie(filtered_df, names='metodologia')
 
-        return bar_prog, pie_mod, pie_met
+        #territorial Bar
+        s_terr = filtered_df.groupby('direccion_territorial')['estado'].count()
+        bar_terr = px.bar(s_terr, y=s_terr.index, x=s_terr.values)
+
+        #Cetap Bar
+        s_cetap = filtered_df.groupby('cetap')['estado'].count()
+        bar_cetap = px.bar(s_cetap, y=s_cetap.index, x=s_cetap.values)
+
+        #historico bar
+        s_periodos = filtered_df.groupby('cod_periodo')['estado'].count()
+        s_periodos.index = [
+            str(periodo)[:-1]+'-I' if str(periodo)[-1]=='1'
+            else
+            str(periodo)[:-1]+'-II'
+            for periodo in s_periodos.index
+        ]
+        bar_histor = px.bar(s_periodos, x=s_periodos.index, y=s_periodos.values)
+
+        #Total_count
+
+        count = filtered_df.shape[0]
+
+        return bar_prog, pie_mod, pie_met, bar_terr, bar_cetap, bar_histor, count 
 
     return 'callbacks created'
 

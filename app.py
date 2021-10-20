@@ -1,6 +1,7 @@
 from dash import Dash, dcc, html
-from dash.dependencies import Input, Output
-from dash.html.Div import Div
+from dash.dcc.Store import Store
+from dash.dependencies import Input, Output, State
+import dash_bootstrap_components as dbc
 
 import callbacks
 from data import data
@@ -13,7 +14,8 @@ app = Dash(__name__)
 df_live = data.get_dataframe()
 
 live_layout = [html.Div(admitidos_live.generate_layout('live')),
-               html.Div(gen_download_button('live-btn_down', 'live-download-dataframe')),]
+               html.Div(gen_download_button('live-btn_down', 'live-download-dataframe')),
+               html.Div(dbc.Pagination(id='live-pagination', max_value=3, active_page=1))]
 
 foto_layout = [
     html.Div(gen_upload_box('foto-upload-data', 'foto-output-upload')),
@@ -39,6 +41,16 @@ callbacks.generate_graphics_callbacks(app, 'live', df_live)
 callbacks.gen_download_callback(app, 'live', df_live)
 callbacks.gen_foto_graphics_callbacks(app, 'foto')
 
+
+@app.callback(
+    Output('live-graphics', 'children'),
+    Input('live-pagination', 'active_page'),
+    suppress_callback_exceptions=True
+)
+def update_graphics(pag):
+    print('Hola Mundo')
+    return admitidos_live.gen_graphics_layout(pag, 'live')
+
 @app.callback(
     Output('page-content', 'children'),
     Input('tabs-component', 'value')
@@ -52,4 +64,4 @@ def render_content(tab):
 
 
 if __name__ == '__main__': 
-    app.run_server()
+    app.run_server(debug=True)
