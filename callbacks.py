@@ -52,16 +52,12 @@ def generate_graphics_callbacks(app: Dash, appname: str, df: pd.DataFrame):
         Output(f'{appname}-admitidos-bar', 'figure'),
         Output(f'{appname}-modalidad-pie', 'figure'),
         Output(f'{appname}-metodologia-pie', 'figure'),
-        Output(f'{appname}-territorial-bar', 'figure'),
-        Output(f'{appname}-cetap-bar', 'figure'),
-        Output(f'{appname}-historico-bar', 'figure'),
-        Output(f'{appname}-total-card', 'childen'),
         [Input(f'{appname}-periodo-dropdown', 'value'),
         Input(f'{appname}-territorial-dropdown', 'value'),
         Input(f'{appname}-cetap-dropdown', 'value'),
         Input(f'{appname}-modalidad-dropdown', 'value'),
         Input(f'{appname}-metodologia-dropdown', 'value'),
-        Input(f'{appname}-programa-dropdown', 'value')],
+        Input(f'{appname}-programa-dropdown', 'value')]
     )
     def generate_graphs(*values):
         #First, we're going to filter the dataframe
@@ -126,7 +122,7 @@ def generate_graphics_callbacks(app: Dash, appname: str, df: pd.DataFrame):
 
         count = filtered_df.shape[0]
 
-        return bar_prog, pie_mod, pie_met, bar_terr, bar_cetap, bar_histor, count 
+        return bar_prog, pie_mod, pie_met
 
     return 'callbacks created'
 

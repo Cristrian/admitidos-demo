@@ -8,7 +8,7 @@ from data import data
 from layouts import admitidos_live, admitidos_foto
 from layouts.components import gen_download_button, gen_upload_box
 
-app = Dash(__name__)
+app = Dash(__name__, suppress_callback_exceptions=True)
 
 #Import Data
 df_live = data.get_dataframe()
@@ -19,7 +19,8 @@ live_layout = [html.Div(admitidos_live.generate_layout('live')),
 
 foto_layout = [
     html.Div(gen_upload_box('foto-upload-data', 'foto-output-upload')),
-    html.Div(admitidos_live.generate_layout('foto'))
+    html.Div(admitidos_live.generate_layout('foto')),
+    html.Div(dbc.Pagination(id='foto-pagination', max_value=3, active_page=1))
 ]
 
 
@@ -44,12 +45,19 @@ callbacks.gen_foto_graphics_callbacks(app, 'foto')
 
 @app.callback(
     Output('live-graphics', 'children'),
-    Input('live-pagination', 'active_page'),
-    suppress_callback_exceptions=True
+    Input('live-pagination', 'active_page')
 )
 def update_graphics(pag):
     print('Hola Mundo')
     return admitidos_live.gen_graphics_layout(pag, 'live')
+
+@app.callback(
+    Output('foto-graphics', 'children'),
+    Input('foto-pagination', 'active_page')
+)
+def update_graphics(pag):
+    print('Hola Mundo')
+    return admitidos_live.gen_graphics_layout(pag, 'foto')
 
 @app.callback(
     Output('page-content', 'children'),
