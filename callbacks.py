@@ -28,7 +28,9 @@ def parse_upload_contents(contents, filename, date):
 
     decoded = base64.b64decode(content_string)
     try:
-        if 'csv' in filename:
+        if 'imp' in filename:
+            df = pd.DataFrame.from_dict(data.decrypt_dataframe(decoded))
+        elif 'csv' in filename:
             # Assume that the user uploaded a CSV file
             df = pd.read_csv(
                 io.StringIO(decoded.decode('utf-8')))

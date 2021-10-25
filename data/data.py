@@ -51,12 +51,18 @@ def generate_dropdowns_data():
     return 'Dropdowns Created'
 
 def encrypt_dataframe(dataframe: pd.DataFrame):
+    """Encrypt the content to be saved on a .imp file.
+    """
     s1 = URLSafeSerializer(os.getenv('IMP_SECRET_KEY'), salt=os.getenv('IMP_SECRET_SALT'))
     df_encr = s1.dumps(dataframe.to_dict())
     return df_encr
 
-def decrypt_dataframe(dataframe):
-    return None
+def decrypt_dataframe(impcontent):
+    """Decrypt the content of a .imp file.
+    """
+    s1 = URLSafeSerializer(os.getenv('IMP_SECRET_KEY'), salt=os.getenv('IMP_SECRET_SALT'))
+    df_decrypt = s1.loads(impcontent)
+    return df_decrypt
 
 def get_dropdown_data():
     if not os.path.isfile('data\dropdowns_data.json'):
