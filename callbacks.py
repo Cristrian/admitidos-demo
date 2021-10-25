@@ -8,8 +8,11 @@ from dash.exceptions import PreventUpdate
 from dash.html.H1 import H1
 import pandas as pd
 import plotly.express as px
+import dash_bootstrap_components as dbc
 
 from data import data
+from layouts import components
+
 def gen_query(col, value):
     """Generates a query to filter a Dataframe"""
     if (value is None) or (value == []):
@@ -51,9 +54,7 @@ def parse_upload_contents(contents, filename, date):
 
 def generate_graphics_callbacks(app: Dash, appname: str, df: pd.DataFrame):
     @app.callback(
-        Output(f'{appname}-admitidos-bar', 'figure'),
-        Output(f'{appname}-modalidad-pie', 'figure'),
-        Output(f'{appname}-metodologia-pie', 'figure'),
+        Output(f'{appname}-graphics-data', 'data'),
         [Input(f'{appname}-periodo-dropdown', 'value'),
         Input(f'{appname}-territorial-dropdown', 'value'),
         Input(f'{appname}-cetap-dropdown', 'value'),
@@ -124,16 +125,22 @@ def generate_graphics_callbacks(app: Dash, appname: str, df: pd.DataFrame):
 
         count = filtered_df.shape[0]
 
-        return bar_prog, pie_mod, pie_met
+        return {
+            'programa-bar': bar_prog,
+            'modalidad-pie': pie_mod,
+            'metodologia-pie': pie_met,
+            'territorial-bar': bar_terr,
+            'cetap-bar': bar_cetap,
+            'historico-bar': bar_histor,
+            'total-count': count
+        }
 
     return 'callbacks created'
 
 def gen_foto_graphics_callbacks(app: Dash, appname: str):
     @app.callback(
-        Output(f'{appname}-admitidos-bar', 'figure'),
-        Output(f'{appname}-modalidad-pie', 'figure'),
-        Output(f'{appname}-metodologia-pie', 'figure'),
-        State(f'{appname}-stored-data', 'data'),
+        Output(f'{appname}-graphics-data', 'data'),
+        Input(f'{appname}-stored-data', 'data'),
         [Input(f'{appname}-periodo-dropdown', 'value'),
         Input(f'{appname}-territorial-dropdown', 'value'),
         Input(f'{appname}-cetap-dropdown', 'value'),
@@ -185,7 +192,37 @@ def gen_foto_graphics_callbacks(app: Dash, appname: str):
         #Pie metodologia
         pie_met = px.pie(filtered_df, names='metodologia')
 
-        return bar_prog, pie_mod, pie_met
+        #territorial Bar
+        s_terr = filtered_df.groupby('direccion_territorial')['estado'].count()
+        bar_terr = px.bar(s_terr, y=s_terr.index, x=s_terr.values)
+
+        #Cetap Bar
+        s_cetap = filtered_df.groupby('cetap')['estado'].count()
+        bar_cetap = px.bar(s_cetap, y=s_cetap.index, x=s_cetap.values)
+
+        #historico bar
+        s_periodos = filtered_df.groupby('cod_periodo')['estado'].count()
+        s_periodos.index = [
+            str(periodo)[:-1]+'-I' if str(periodo)[-1]=='1'
+            else
+            str(periodo)[:-1]+'-II'
+            for periodo in s_periodos.index
+        ]
+        bar_histor = px.bar(s_periodos, x=s_periodos.index, y=s_periodos.values)
+
+        #Total_count
+
+        count = filtered_df.shape[0]
+
+        return {
+            'programa-bar': bar_prog,
+            'modalidad-pie': pie_mod,
+            'metodologia-pie': pie_met,
+            'territorial-bar': bar_terr,
+            'cetap-bar': bar_cetap,
+            'historico-bar': bar_histor,
+            'total-count': count
+        }
 
     @app.callback(
         Output(f'{appname}-output-upload', 'children'),
@@ -230,3 +267,65 @@ def gen_upload_callback(app: Dash, appname: str):
             children = []
         return children
     return None
+
+def plot_graphics_callback(app: Dash, appname: str):
+    @app.callback(
+        Output(f'{appname}-graphics', 'children'),
+        [Input(f'{appname}-graphics-data', 'data'),
+        Input(f'{appname}-pagination', 'active_page')]
+    )
+    def update_graphics(figures, pag):
+        if not figures:
+            raise PreventUpdate
+        if pag == 1:
+            graphics = [
+                dbc.Row(
+                    dbc.Col(dcc.Graph(
+                        id=f'{appname}-admitidos-bar', 
+                        figure=figures['programa-bar']
+                    ))
+                ),
+                dbc.Row([
+                    dbc.Col(
+                        dcc.Graph(
+                            id=f'{appname}-modalidad-pie',
+                            figure=figures['modalidad-pie']
+                        ), 
+                        width='md-6'),
+                    dbc.Col(
+                        dcc.Graph(
+                            id=f'{appname}-metodologia-pie',
+                            figure=figures['metodologia-pie']
+                        ), 
+                        width='md-6'),
+                ])
+            ]
+        elif pag==2:
+            graphics = [
+                dbc.Row(
+                    dbc.Col(dcc.Graph(
+                        id=f'{appname}-territorial-bar', figure=figures['territorial-bar']
+                        )),
+                ),
+                dbc.Row(
+                    dbc.Col(dcc.Graph(
+                        id=f'{appname}-cetap-bar',
+                        figure=figures['cetap-bar'])),
+                ),
+            ]
+        elif pag==3:
+            graphics = [
+                dbc.Row(
+                    components.generate_card(
+                        id=f'{appname}-total-card',
+                        color='blue',
+                        card_title='Total Admitidos',
+                        body=figures['total-count'])
+
+                ),
+                dbc.Row(
+                    dcc.Graph(id=f'{appname}-historico-bar', figure=figures['historico-bar'])
+                )
+            ]
+        return graphics
+

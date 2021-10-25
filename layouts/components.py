@@ -32,12 +32,12 @@ def generate_dropdown(id: str, title: str, dropdown_data: dict,
     )
     return [title, dropdown]
 
-def generate_card(id, color, card_title):
+def generate_card(id, color, card_title, body):
     
     card = html.Div([
         dbc.CardBody([
             html.H5(card_title, className="card-title"),
-            html.P(id=id ,className="card-text")]
+            html.P(id=id ,className="card-text", children=body)]
         ),
         ],
         className="card text-center"

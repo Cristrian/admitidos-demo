@@ -68,7 +68,7 @@ def generate_layout(appname):
     return layout
 
 
-def gen_graphics_layout(page: int, appname):
+"""def gen_graphics_layout(page: int, appname):
     if page == 1:
         graphics = [
             dbc.Row(
@@ -103,3 +103,4 @@ def gen_graphics_layout(page: int, appname):
             )
         ]
     return graphics
+"""
