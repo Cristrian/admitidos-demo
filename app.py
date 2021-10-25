@@ -5,7 +5,7 @@ import dash_bootstrap_components as dbc
 
 import callbacks
 from data import data
-from layouts import admitidos_live
+from layouts import admitidos
 from layouts.components import gen_download_button, gen_upload_box
 
 app = Dash(__name__, suppress_callback_exceptions=True)
@@ -13,13 +13,13 @@ app = Dash(__name__, suppress_callback_exceptions=True)
 #Import Data
 df_live = data.get_dataframe()
 
-live_layout = [html.Div(admitidos_live.generate_layout('live')),
+live_layout = [html.Div(admitidos.generate_layout('live')),
                html.Div(gen_download_button('live-btn_down', 'live-download-dataframe')),
                html.Div(dbc.Pagination(id='live-pagination', max_value=3, active_page=1))]
 
 foto_layout = [
     html.Div(gen_upload_box('foto-upload-data', 'foto-output-upload')),
-    html.Div(admitidos_live.generate_layout('foto')),
+    html.Div(admitidos.generate_layout('foto')),
     html.Div(dbc.Pagination(id='foto-pagination', max_value=3, active_page=1))
 ]
 
@@ -49,7 +49,7 @@ callbacks.gen_foto_graphics_callbacks(app, 'foto')
 )
 def update_graphics(pag):
     print('Hola Mundo')
-    return admitidos_live.gen_graphics_layout(pag, 'live')
+    return admitidos.gen_graphics_layout(pag, 'live')
 
 @app.callback(
     Output('foto-graphics', 'children'),
@@ -57,7 +57,7 @@ def update_graphics(pag):
 )
 def update_graphics(pag):
     print('Hola Mundo')
-    return admitidos_live.gen_graphics_layout(pag, 'foto')
+    return admitidos.gen_graphics_layout(pag, 'foto')
 
 @app.callback(
     Output('page-content', 'children'),

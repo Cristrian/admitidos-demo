@@ -2,6 +2,10 @@ import json
 import os
 
 import pandas as pd
+from dotenv import load_dotenv
+from itsdangerous import URLSafeSerializer
+
+load_dotenv(override=True)
 
 def get_dataframe():
     df = pd.read_csv('data/admitidos.csv')
@@ -45,6 +49,14 @@ def generate_dropdowns_data():
     with open('data/dropdowns_data.json', 'w') as outfile:
         json.dump(dropdowns_dict, outfile, indent=4)
     return 'Dropdowns Created'
+
+def encrypt_dataframe(dataframe: pd.DataFrame):
+    s1 = URLSafeSerializer(os.getenv('IMP_SECRET_KEY'), salt=os.getenv('IMP_SECRET_SALT'))
+    df_encr = s1.dumps(dataframe.to_dict())
+    return df_encr
+
+def decrypt_dataframe(dataframe):
+    return None
 
 def get_dropdown_data():
     if not os.path.isfile('data\dropdowns_data.json'):

@@ -209,7 +209,7 @@ def gen_download_callback(app: Dash, appname: str, df: pd.DataFrame):
         prevent_initial_call=True
     )
     def download_data(n):
-        return dcc.send_data_frame(df.to_csv, 'picture.csv')
+        return dict(content=data.encrypt_dataframe(df), filename='picture.imp')
     return None
 
 def gen_upload_callback(app: Dash, appname: str):
