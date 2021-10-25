@@ -5,7 +5,7 @@ import dash_bootstrap_components as dbc
 
 import callbacks
 from data import data
-from layouts import admitidos_live, admitidos_foto
+from layouts import admitidos_live
 from layouts.components import gen_download_button, gen_upload_box
 
 app = Dash(__name__, suppress_callback_exceptions=True)
