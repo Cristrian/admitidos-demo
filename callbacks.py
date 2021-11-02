@@ -110,6 +110,7 @@ def generate_graphics_callbacks(app: Dash, appname: str, df: pd.DataFrame):
         #Cetap Bar
         s_cetap = filtered_df.groupby('cetap')['estado'].count()
         bar_cetap = px.bar(s_cetap, y=s_cetap.index, x=s_cetap.values)
+        bar_cetap.update_layout(height=components.set_bar_size(s_cetap.size))
 
         #historico bar
         s_periodos = filtered_df.groupby('cod_periodo')['estado'].count()
@@ -304,13 +305,19 @@ def plot_graphics_callback(app: Dash, appname: str):
             graphics = [
                 dbc.Row(
                     dbc.Col(dcc.Graph(
-                        id=f'{appname}-territorial-bar', figure=figures['territorial-bar']
+                        id=f'{appname}-territorial-bar', 
+                        figure=figures['territorial-bar']
                         )),
                 ),
                 dbc.Row(
-                    dbc.Col(dcc.Graph(
-                        id=f'{appname}-cetap-bar',
-                        figure=figures['cetap-bar'])),
+                    dbc.Col(
+                        html.Div(
+                            dcc.Graph(
+                                id=f'{appname}-cetap-bar',
+                                figure=figures['cetap-bar'],
+                            ),
+                            style={'overflow-y': 'scroll', 'height': '500px'})
+                        )
                 ),
             ]
         elif pag==3:

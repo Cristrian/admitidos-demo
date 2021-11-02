@@ -1,6 +1,15 @@
 from dash import dcc, html
 import dash_bootstrap_components as dbc
 
+def set_bar_size(total_bars: int):
+    if total_bars <=2:
+        height = 350
+    elif total_bars <=7:
+        height = 100*total_bars
+    elif total_bars >7:
+        height = 40*total_bars
+    return height
+
 def generate_dropdown(id: str, title: str, dropdown_data: dict, 
                             default_label = 'All', default_value = None):
     """Generates a dropdown component.
